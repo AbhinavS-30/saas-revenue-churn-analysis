@@ -66,6 +66,8 @@ upgrade/downgrade flags), `feature_usage` (time-series engagement),
 data/raw/          original Kaggle CSVs (not committed — see below)
 data/processed/    SQL query outputs used by the Python/Tableau layers
 sql/schema/        table DDL
+sql/views/         reusable building-block views (clean subscription
+                    timeline, calendar spine, account-month MRR grid)
 sql/metrics/       MRR waterfall, gross/net churn + NRR, cohorts, segments
 python/eda/        EDA + light statistics
 python/ai_summary/ local Ollama summary generation script
@@ -126,10 +128,31 @@ psql -h localhost -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f s
   PK/FK constraints and indexes on join/filter columns. All 5 CSVs
   loaded via `\copy`; row counts and referential integrity (zero
   orphaned foreign keys) verified against source.
+- **Stage 3 (in progress)** — MRR waterfall built and verified. Found
+  that raw `subscription.end_date` is unreliable (353 of 441 chained
+  subscription pairs per account overlapped in the raw data — a source
+  data-quality gap, not a real business scenario of concurrent plans),
+  so built `subscription_timeline` (a view) to derive a trustworthy
+  effective end date from each account's own event sequence instead.
+  Built on that: a `calendar_months` spine, an `account_month_mrr` grid,
+  and the final waterfall — verified with zero arithmetic mismatches
+  and zero month-to-month continuity breaks across all 24 months.
+  Still to build: gross/net MRR churn + NRR, cohort retention, segment
+  breakdowns. Open question flagged for later: some subscription rows
+  carry `mrr_amount = 0` (appear to be trial periods) — need a
+  documented rule for how these count before we get to churn/NRR.
 
 ## Key findings
 
-*(filled in once the SQL metrics layer is built)*
+*(more to be added as the remaining metrics are built)*
+
+- MRR grew from $4.5K (Jan 2023) to a peak of $1.17M (Nov 2024) — steady
+  month-over-month growth for nearly the entire window.
+- **December 2024 is the first month MRR actually declines** ($1.173M →
+  $1.151M), driven by the single largest churned-MRR figure in the whole
+  dataset (-$185,954) — new + expansion revenue ($443K) wasn't enough to
+  offset contraction + churn (-$466K) that month. Worth investigating
+  which segment(s) drove this once the segment breakdowns are built.
 
 ## Business recommendation
 
