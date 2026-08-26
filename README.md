@@ -137,10 +137,14 @@ psql -h localhost -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f s
   Built on that: a `calendar_months` spine, an `account_month_mrr` grid,
   and the final waterfall — verified with zero arithmetic mismatches
   and zero month-to-month continuity breaks across all 24 months.
-  Still to build: gross/net MRR churn + NRR, cohort retention, segment
-  breakdowns. Open question flagged for later: some subscription rows
-  carry `mrr_amount = 0` (appear to be trial periods) — need a
-  documented rule for how these count before we get to churn/NRR.
+  Gross MRR churn, net MRR churn, and NRR built on top of the same
+  classification view — verified the identity NRR% + Net Churn% = 100%
+  holds with zero mismatches across every month. The earlier flagged
+  question ($0-MRR trial subscriptions) turned out not to need a special
+  rule: these are *revenue*-denominated metrics, so a $0-revenue period
+  is correctly treated as no revenue regardless of trial status — that
+  would only matter for a logo/customer-count churn metric, which isn't
+  in scope here. Still to build: cohort retention, segment breakdowns.
 
 ## Key findings
 
@@ -153,6 +157,16 @@ psql -h localhost -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f s
   dataset (-$185,954) — new + expansion revenue ($443K) wasn't enough to
   offset contraction + churn (-$466K) that month. Worth investigating
   which segment(s) drove this once the segment breakdowns are built.
+- **Gross MRR churn averages 28.3%/month, but net MRR churn averages
+  only 8.2%/month (avg NRR: 91.8%)** — expansion revenue is consistently
+  offsetting roughly 70% of gross losses. 3 of 23 measurable months even
+  had *negative* net churn (NRR > 100%). Read this gap carefully: gross
+  churn this high is not a typical SaaS benchmark — it reflects this
+  being a synthetic pre-launch/pilot-stage dataset (per the source
+  README) with unusually high subscription turnover, not a real
+  industry rate. The **relationship** between gross and net churn (net
+  consistently well below gross) is the meaningful, transferable
+  finding — the absolute magnitude is a dataset characteristic.
 
 ## Business recommendation
 
