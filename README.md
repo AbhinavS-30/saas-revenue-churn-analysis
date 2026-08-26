@@ -25,9 +25,23 @@ machine learning. There is no predictive model here.
 ## Dataset
 
 [RavenStack SaaS Subscription & Churn Analytics Dataset](https://www.kaggle.com/datasets/rivalytics/saas-subscription-and-churn-analytics-dataset)
-(Kaggle, synthetic). Five relational tables: `accounts`, `subscriptions`
-(with MRR/ARR and upgrade/downgrade flags), `feature_usage` (time-series
-engagement), `support_tickets`, and `churn_events`.
+by **River @ Rivalytics** (Kaggle, MIT-like license, fully synthetic —
+credit to the original author as required by the license). Five
+relational tables: `accounts`, `subscriptions` (with MRR/ARR and
+upgrade/downgrade flags), `feature_usage` (time-series engagement),
+`support_tickets`, and `churn_events`.
+
+**Data profile:**
+- accounts: 500 · subscriptions: 5,000 · feature_usage: 25,000 ·
+  support_tickets: 2,000 · churn_events: 600
+- Calendar coverage: **Jan 2023 – Dec 2024** (2 full years) across every
+  table — enough for a real MRR trend and up to 24 months of cohort
+  tracking on the earliest signups
+- Churn is tracked at **three levels** that won't always agree:
+  `accounts.churn_flag`, `subscriptions.churn_flag`, and a separate
+  `churn_events` table (an account can have one churned subscription
+  while remaining active overall, etc.) — reconciling these correctly is
+  part of the SQL work in Stage 3, not a data quality issue to ignore
 
 ## Tech stack (all free)
 
@@ -82,7 +96,9 @@ below.
 - **Stage 1** — Repo scaffolded, git initialized, Python 3.12 virtual
   environment created (Homebrew Python, not the older Apple-system
   3.9.6), Docker Desktop confirmed running natively on Apple Silicon
-  (`linux/aarch64`, no emulation).
+  (`linux/aarch64`, no emulation). Dataset pulled via Kaggle API,
+  MIT-like license confirmed, row counts and date range validated
+  against the source.
 
 ## Key findings
 
