@@ -82,10 +82,32 @@ below.
 ## Getting the data
 
 ```bash
-# one-time: put your Kaggle API token at ~/.kaggle/kaggle.json (see
+# one-time: put your Kaggle API token at ~/.kaggle/access_token (see
 # kaggle.com/settings -> API -> Create New Token), then:
 .venv/bin/kaggle datasets download -d rivalytics/saas-subscription-and-churn-analytics-dataset -p data/raw --unzip
 ```
+
+## Running the database
+
+```bash
+cp .env.example .env        # fill in your own local credentials
+docker compose -f docker/docker-compose.yml --env-file .env up -d
+
+set -a; source .env; set +a
+export PGPASSWORD="$POSTGRES_PASSWORD"
+psql -h localhost -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/schema/001_create_tables.sql
+psql -h localhost -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f sql/schema/002_load_data.sql
+```
+
+### Data quality notes (found and handled during load)
+
+- `feature_usage.usage_id` is **not actually unique** in the source CSV
+  (21 of 25,000 rows reuse an ID across unrelated events). We use a
+  surrogate `BIGSERIAL` primary key instead and keep `usage_id` as a
+  plain reference column — flagged rather than silently forced through.
+- `support_tickets.satisfaction_score` is stored as a decimal-formatted
+  string (`"4.0"`) for what's really a 1–5 whole-number rating —
+  `NUMERIC(2,1)` instead of `SMALLINT` to accept it as-is.
 
 ## Progress log
 
@@ -99,6 +121,11 @@ below.
   (`linux/aarch64`, no emulation). Dataset pulled via Kaggle API,
   MIT-like license confirmed, row counts and date range validated
   against the source.
+- **Stage 2** — Postgres 16 (arm64-native, no emulation) running in
+  Docker via `docker-compose.yml`. Schema created across 5 tables with
+  PK/FK constraints and indexes on join/filter columns. All 5 CSVs
+  loaded via `\copy`; row counts and referential integrity (zero
+  orphaned foreign keys) verified against source.
 
 ## Key findings
 

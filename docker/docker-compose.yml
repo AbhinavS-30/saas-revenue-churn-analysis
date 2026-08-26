@@ -1,0 +1,24 @@
+name: saas_churn
+
+services:
+  postgres:
+    # Official Postgres image is multi-arch (publishes linux/arm64 and
+    # linux/amd64 under the same tag) — Docker automatically pulls the
+    # arm64 build on Apple Silicon. Nothing here needs emulation.
+    image: postgres:16-alpine
+    container_name: saas_churn_postgres
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
