@@ -1,0 +1,25 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Secrets
+.env
+kaggle.json
+
+# Data (raw/processed regenerated via scripts, not committed — see README)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Docker volumes / local Postgres data
+docker/pgdata/
+
+# OS
+.DS_Store
+
+# Generated outputs (regenerable from the pipeline)
+outputs/summaries/*
+!outputs/summaries/.gitkeep

@@ -1,0 +1,11 @@
+# Stage 1-4 dependencies. More get added as we reach later stages
+# (streamlit, ollama client) rather than front-loading everything now.
+
+kaggle              # pulls the dataset from Kaggle via API
+psycopg2-binary     # Postgres driver for Python
+sqlalchemy          # convenience layer for pandas <-> Postgres
+python-dotenv       # loads DB credentials from a local .env file (not committed)
+pandas              # EDA
+matplotlib          # charts
+seaborn             # charts
+scipy               # hypothesis testing (Stage 4)
