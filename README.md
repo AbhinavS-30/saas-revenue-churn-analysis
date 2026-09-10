@@ -242,6 +242,14 @@ on one for anything numeric.
   what went wrong and the fix). Verified the final generated summary
   against the source numbers by hand — all figures and comparisons
   check out.
+- **Stage 7** — Streamlit page (`streamlit_app/app.py`): KPI tiles,
+  the AI executive summary with an explicit "generated locally, not
+  live" timestamp banner, a Tableau embed slot (`streamlit_app/config.py`
+  — set once the workbook is published to Tableau Public), and the 4
+  supplementary charts. Smoke-tested locally (HTTP 200, no errors).
+  Deploy: push to GitHub, connect the repo on
+  share.streamlit.io (free tier), set main file to
+  `streamlit_app/app.py`.
 
 ## Key findings
 

@@ -10,3 +10,4 @@ matplotlib          # charts
 seaborn==0.13.2     # charts (cohort heatmap)
 scipy               # hypothesis testing (Stage 4)
 requests            # talks to the local Ollama HTTP API (Stage 6)
+streamlit==1.63.0   # the dashboard companion page (Stage 7)
