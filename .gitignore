@@ -20,6 +20,8 @@ docker/pgdata/
 # OS
 .DS_Store
 
-# Generated outputs (regenerable from the pipeline)
-outputs/summaries/*
-!outputs/summaries/.gitkeep
+# Generated outputs: figures ARE committed (small PNGs, embedded in the
+# README so the case study is self-contained on GitHub). Same for
+# outputs/summaries/*.json — the deployed Streamlit app (Stage 7) reads
+# executive_summary.json directly from the repo, since it can't run
+# Ollama itself. Nothing to ignore here; kept as a section marker.

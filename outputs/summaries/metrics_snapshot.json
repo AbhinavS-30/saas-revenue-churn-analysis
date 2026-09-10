@@ -1,0 +1,84 @@
+{
+  "latest_month": "2024-12-01",
+  "ending_mrr": 1150514.0,
+  "prior_month_ending_mrr": 1172984.0,
+  "mrr_change_dollars": -22470.0,
+  "mom_mrr_growth_pct": -1.92,
+  "new_mrr": 183693.0,
+  "expansion_mrr": 259761.0,
+  "contraction_mrr": -279970.0,
+  "churned_mrr": -185954.0,
+  "gross_mrr_churn_rate_pct": 39.72,
+  "net_mrr_churn_rate_pct": 17.58,
+  "nrr_pct": 82.42,
+  "avg_gross_churn_pct_full_period": 28.3,
+  "avg_net_churn_pct_full_period": 8.2,
+  "avg_nrr_pct_full_period": 91.8,
+  "plan_tier_churn": [
+    {
+      "plan_tier": "Enterprise",
+      "n_accounts": 154,
+      "n_churned": 34,
+      "churn_rate_pct": 22.1
+    },
+    {
+      "plan_tier": "Basic",
+      "n_accounts": 168,
+      "n_churned": 37,
+      "churn_rate_pct": 22.0
+    },
+    {
+      "plan_tier": "Pro",
+      "n_accounts": 178,
+      "n_churned": 39,
+      "churn_rate_pct": 21.9
+    }
+  ],
+  "industry_churn": [
+    {
+      "industry": "DevTools",
+      "n_accounts": 113,
+      "n_churned": 35,
+      "churn_rate_pct": 31.0
+    },
+    {
+      "industry": "FinTech",
+      "n_accounts": 112,
+      "n_churned": 25,
+      "churn_rate_pct": 22.3
+    },
+    {
+      "industry": "HealthTech",
+      "n_accounts": 96,
+      "n_churned": 21,
+      "churn_rate_pct": 21.9
+    },
+    {
+      "industry": "EdTech",
+      "n_accounts": 79,
+      "n_churned": 13,
+      "churn_rate_pct": 16.5
+    },
+    {
+      "industry": "Cybersecurity",
+      "n_accounts": 100,
+      "n_churned": 16,
+      "churn_rate_pct": 16.0
+    }
+  ],
+  "hypothesis_tests": {
+    "plan_tier_chi_square": {
+      "chi2": 0.001,
+      "dof": 2,
+      "p_value": 0.9993,
+      "significant_at_0.05": false
+    },
+    "devtools_vs_cybersecurity_churn_ztest": {
+      "devtools_churn_pct": 31.0,
+      "cybersecurity_churn_pct": 16.0,
+      "z": 2.556,
+      "p_value": 0.0106,
+      "significant_at_0.05": true
+    }
+  }
+}

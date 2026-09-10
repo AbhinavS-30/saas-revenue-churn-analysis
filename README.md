@@ -111,6 +111,44 @@ psql -h localhost -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f s
   string (`"4.0"`) for what's really a 1–5 whole-number rating —
   `NUMERIC(2,1)` instead of `SMALLINT` to accept it as-is.
 
+## Charts
+
+![MRR Waterfall](outputs/figures/01_mrr_waterfall.png)
+![Gross vs Net MRR Churn](outputs/figures/02_gross_vs_net_churn.png)
+![Cohort Retention Heatmap](outputs/figures/03_cohort_retention_heatmap.png)
+![Segment Churn Comparison](outputs/figures/04_segment_churn_comparison.png)
+
+## AI-generated executive summary (example, Dec 2024 data)
+
+*Generated locally by `llama3.2:3b` via Ollama — see the section below for
+what this pattern is and how it was validated for factual accuracy.*
+
+> Our latest month's MRR ended at $1,150,514, showing a month-over-month
+> decline of $22,470 from the prior month's ending MRR. This represents
+> a growth rate of -1.92% from the previous month. Notably, the
+> expansion revenue from existing customers has offset some of the
+> contraction revenue, leading to a net MRR churn rate of 17.58%, which
+> is lower than the gross churn rate of 39.72%.
+>
+> The distinction between the two churn rates is attributed to the
+> expansion revenue offsetting some of the losses. Expansion revenue
+> from existing customers is the primary driver of this difference,
+> rather than any other factor.
+>
+> In terms of churn patterns, the analysis reveals that plan tier does
+> not meaningfully predict churn. The chi-square test result indicates
+> that the tiers are essentially tied, with the Enterprise tier at
+> 22.1%, Basic at 22.0%, and Pro at 21.9% — the difference between the
+> tiers is not statistically significant.
+>
+> Segmenting the data by industry reveals a real trend: DevTools
+> exhibits the highest churn rate at 31.0%, while Cybersecurity has the
+> lowest at 16.0%.
+>
+> **Recommendation:** Customer Success should focus on proactively
+> engaging with DevTools customers to understand the root causes of
+> their churn and develop targeted retention strategies.
+
 ## Local AI summary layer (Ollama)
 
 `python/ai_summary/generate_summary.py` uses **Ollama** running
