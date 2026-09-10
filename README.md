@@ -111,6 +111,38 @@ psql -h localhost -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f s
   string (`"4.0"`) for what's really a 1–5 whole-number rating —
   `NUMERIC(2,1)` instead of `SMALLINT` to accept it as-is.
 
+## Local AI summary layer (Ollama)
+
+`python/ai_summary/generate_summary.py` uses **Ollama** running
+`llama3.2:3b` locally (free, no API key, ~2GB model, runs comfortably on
+an M-series Mac) to turn `outputs/summaries/metrics_snapshot.json` into
+a plain-English executive summary, saved to
+`outputs/summaries/executive_summary.json`.
+
+**Why local, and why pre-generated rather than live:** Streamlit
+Community Cloud's free tier can't run Ollama (no GPU/local model
+hosting). So this script is meant to be run locally each time the data
+refreshes — its only output is a small JSON file that gets committed
+alongside the data, and the deployed Streamlit app just reads that file.
+This is a legitimate, common real-world pattern for keeping a
+local-inference step out of a hosting environment that can't run one —
+the README is upfront about it rather than presenting it as live
+per-visitor inference.
+
+**A real limitation worth documenting, not hiding:** getting factually
+reliable output from a 3B model took real iteration, not a one-shot
+prompt. First draft invented a cause for the gross/net churn gap
+("billing issues" — not in the data) and mislabeled the lowest-churn
+industry as a churn problem. Second draft fixed the industry mix-up but
+fabricated a dollar figure ($57,121) that didn't match either number it
+had been given. The fix that actually worked: stop asking the model to
+compare or calculate anything — precompute every ranking and every
+derived number (highest/lowest industry, highest/lowest plan tier, the
+exact dollar MRR delta) in Python and hand them over as stated facts,
+leaving the model's job purely prose, not arithmetic or comparison. This
+is a real constraint of small local models worth knowing before relying
+on one for anything numeric.
+
 ## Progress log
 
 - **Stage 0** — Evaluated 3 candidate Kaggle datasets, chose RavenStack
@@ -166,6 +198,12 @@ psql -h localhost -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f s
   not a rainbow colormap). Also writes
   `outputs/summaries/metrics_snapshot.json`, the structured input the
   Stage 6 Ollama summary will read.
+- **Stage 6** — Ollama installed (Homebrew, arm64-native), `llama3.2:3b`
+  pulled (~2GB). Summary generation script built and iterated until
+  factually reliable (see "Local AI summary layer" section above for
+  what went wrong and the fix). Verified the final generated summary
+  against the source numbers by hand — all figures and comparisons
+  check out.
 
 ## Key findings
 

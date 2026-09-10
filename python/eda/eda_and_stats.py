@@ -225,6 +225,8 @@ def main():
     snapshot = {
         "latest_month": str(latest["month_start"].date() if hasattr(latest["month_start"], "date") else latest["month_start"]),
         "ending_mrr": float(latest["ending_mrr"]),
+        "prior_month_ending_mrr": float(prior["ending_mrr"]),
+        "mrr_change_dollars": round(float(latest["ending_mrr"] - prior["ending_mrr"]), 2),
         "mom_mrr_growth_pct": mom_growth_pct,
         "new_mrr": float(latest["new_mrr"]),
         "expansion_mrr": float(latest["expansion_mrr"]),
