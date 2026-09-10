@@ -144,7 +144,18 @@ psql -h localhost -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f s
   rule: these are *revenue*-denominated metrics, so a $0-revenue period
   is correctly treated as no revenue regardless of trial status — that
   would only matter for a logo/customer-count churn metric, which isn't
-  in scope here. Still to build: cohort retention, segment breakdowns.
+  in scope here. Cohort retention and segment breakdowns are also done.
+  Cohort anchor had to be corrected: `accounts.signup_date` turned out
+  to mean "account created," not "started paying" — 95% of accounts
+  have a real gap (avg 33 days) before their first subscription, which
+  produced an inverted retention curve when anchored on signup_date.
+  Re-anchored cohorts on each account's first subscription start_date
+  instead, which is the standard, defensible basis and produces a
+  sane curve (starts ~100%, blended retention flat around 80-85%
+  through month 12). Segment breakdown: logo churn rate by original
+  signup plan_tier (all 3 tiers within ~1pt of each other — plan tier
+  alone doesn't explain who churns) and monthly MRR by current plan
+  tier for Tableau's segment/date filters.
 
 ## Key findings
 
@@ -167,6 +178,11 @@ psql -h localhost -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f s
   industry rate. The **relationship** between gross and net churn (net
   consistently well below gross) is the meaningful, transferable
   finding — the absolute magnitude is a dataset characteristic.
+- **Logo churn rate is nearly identical across plan tiers**: Enterprise
+  22.1%, Basic 22.0%, Pro 21.9%. On the surface, plan tier alone doesn't
+  predict who churns — tested formally with a hypothesis test in Stage 4
+  to confirm this isn't just noise, and to point toward what *does*
+  differentiate churners if tier doesn't.
 
 ## Business recommendation
 

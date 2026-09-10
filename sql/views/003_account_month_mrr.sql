@@ -6,6 +6,11 @@
 -- 500 accounts x 24 months = 12,000 rows. mrr = 0 for any month before
 -- signup or after full churn (no matching subscription_timeline row).
 
+-- Added later (Stage 3, segment breakdown): plan_tier, the tier of
+-- whichever subscription is active as of month_end. Safe as MAX() since
+-- piece 1 already guarantees at most one matching row per account/month
+-- (MAX of one value, or NULL if nothing active) — not an aggregation
+-- choice that could hide a real tie.
 CREATE OR REPLACE VIEW account_month_mrr AS
 SELECT
     cm.month_start,
@@ -13,7 +18,8 @@ SELECT
     -- COALESCE turns "no matching subscription row" (NULL from the LEFT
     -- JOIN) into an explicit 0 — an account with nothing active that
     -- month contributes $0 MRR, not a missing/unknown value.
-    COALESCE(SUM(st.mrr_amount), 0) AS mrr
+    COALESCE(SUM(st.mrr_amount), 0) AS mrr,
+    MAX(st.plan_tier) AS plan_tier
 FROM accounts a
 -- CROSS JOIN pairs every account with every month, so every account
 -- gets a row for all 24 months even if they signed up partway through
