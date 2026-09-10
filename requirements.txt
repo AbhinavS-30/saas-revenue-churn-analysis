@@ -7,5 +7,5 @@ sqlalchemy          # convenience layer for pandas <-> Postgres
 python-dotenv       # loads DB credentials from a local .env file (not committed)
 pandas              # EDA
 matplotlib          # charts
-seaborn             # charts
+seaborn==0.13.2     # charts (cohort heatmap)
 scipy               # hypothesis testing (Stage 4)

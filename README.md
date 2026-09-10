@@ -156,6 +156,16 @@ psql -h localhost -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f s
   signup plan_tier (all 3 tiers within ~1pt of each other — plan tier
   alone doesn't explain who churns) and monthly MRR by current plan
   tier for Tableau's segment/date filters.
+- **Stage 4** — Python EDA + light stats (`python/eda/eda_and_stats.py`).
+  Deliberately thin: it runs the already-verified `.sql` files directly
+  (one source of truth for metric logic, no reimplementation in
+  pandas), exports 6 CSVs to `data/processed/` for Tableau, makes 4
+  charts, and runs 2 hypothesis tests. Chart colors picked and verified
+  colorblind-safe via the project's data-viz color validator (fixed
+  categorical slot order, single-hue sequential ramp for the heatmap —
+  not a rainbow colormap). Also writes
+  `outputs/summaries/metrics_snapshot.json`, the structured input the
+  Stage 6 Ollama summary will read.
 
 ## Key findings
 
@@ -179,10 +189,20 @@ psql -h localhost -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f s
   consistently well below gross) is the meaningful, transferable
   finding — the absolute magnitude is a dataset characteristic.
 - **Logo churn rate is nearly identical across plan tiers**: Enterprise
-  22.1%, Basic 22.0%, Pro 21.9%. On the surface, plan tier alone doesn't
-  predict who churns — tested formally with a hypothesis test in Stage 4
-  to confirm this isn't just noise, and to point toward what *does*
-  differentiate churners if tier doesn't.
+  22.1%, Basic 22.0%, Pro 21.9%. Confirmed statistically, not just
+  eyeballed — a chi-square test of independence (plan tier x
+  churned/not) returns p = 0.999. Plan tier does not predict churn in
+  this data.
+- **Industry does predict churn.** DevTools churns at 31.0% vs
+  Cybersecurity at 16.0% — nearly double. A two-proportion z-test
+  confirms this is a real difference, not noise (z = 2.56, p = 0.011,
+  significant at the 0.05 level). **This is the actionable segment
+  finding**: if Customer Success has to prioritize outreach, industry
+  vertical is a far better signal than plan tier.
+- **Cohort retention holds fairly flat around 80-85% through month 12**
+  once correctly anchored on first-subscription date (see methodology
+  note above) — no steep early-tenure cliff, attrition is more evenly
+  spread across tenure than a typical SaaS onboarding-drop-off pattern.
 
 ## Business recommendation
 
