@@ -377,11 +377,23 @@ on one for anything numeric.
   factually reliable (see "Local AI summary layer" above for what went
   wrong and the fix). Verified the final generated summary against the
   source numbers by hand — all figures and comparisons check out.
-- **Stage 7** — Streamlit page (`streamlit_app/app.py`): KPI tiles,
-  the AI executive summary with an explicit "generated locally, not
-  live" timestamp banner, a Tableau embed slot (`streamlit_app/config.py`
-  — set once the workbook is published to Tableau Public), and the 4
-  supplementary charts. Smoke-tested locally (HTTP 200, no errors).
+- **Stage 7** — Streamlit page (`streamlit_app/app.py`): a date-range
+  slider + segment dimension selector (Plan Tier / Industry) that
+  genuinely recompute the KPI tiles and re-render the charts (Altair,
+  not static images) — not just a display page. Extended the SQL layer
+  to support this: `account_month_mrr` now carries `industry` alongside
+  `plan_tier`, and a new `07_segment_monthly_industry_mrr.sql` gives
+  industry a monthly breakdown to filter by (industry is the dimension
+  that's actually significant, so it's the more meaningful one to make
+  interactive). Verified the filter logic directly (not just via the
+  UI): confirmed KPI values genuinely differ across segment/date
+  combinations, and caught a real edge case in testing — percent growth
+  computed from a tiny starting base (e.g. 1 account, $931 MRR) produced
+  a mathematically-correct-but-meaningless "+25,070%"; added a minimum-
+  base guard that shows "n/a (base too small)" instead. The AI summary
+  and Tableau embed remain intentionally static/non-reactive to these
+  filters — the page is explicit about which parts are live and which
+  aren't. Smoke-tested locally (HTTP 200, no errors).
 - **Stage 8** — `streamlit_app/Dockerfile` added for local
   reproducibility (`python:3.12-slim`, official multi-arch image, pulls
   natively on Apple Silicon). Built and ran it: confirmed `linux/arm64`

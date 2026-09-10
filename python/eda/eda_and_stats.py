@@ -84,14 +84,16 @@ def main():
     plan_tier_churn = run_metric(engine, "04_segment_logo_churn.sql")
     segment_mrr = run_metric(engine, "05_segment_monthly_mrr.sql")
     industry_churn = run_metric(engine, "06_segment_industry_churn.sql")
+    segment_industry_mrr = run_metric(engine, "07_segment_monthly_industry_mrr.sql")
 
     for name, df in [
         ("mrr_waterfall", waterfall), ("gross_net_churn_and_nrr", churn_nrr),
         ("cohort_retention", cohort), ("segment_plan_tier_churn", plan_tier_churn),
         ("segment_monthly_mrr", segment_mrr), ("segment_industry_churn", industry_churn),
+        ("segment_monthly_industry_mrr", segment_industry_mrr),
     ]:
         df.to_csv(PROCESSED_DIR / f"{name}.csv", index=False)
-    print(f"Saved 6 CSVs to {PROCESSED_DIR}")
+    print(f"Saved 7 CSVs to {PROCESSED_DIR}")
 
     # ---------------------------------------------------------------
     # Chart 1: MRR waterfall — stacked bars for the 4 movement types,

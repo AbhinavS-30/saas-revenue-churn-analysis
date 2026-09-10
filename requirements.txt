@@ -11,3 +11,6 @@ seaborn==0.13.2     # charts (cohort heatmap)
 scipy               # hypothesis testing (Stage 4)
 requests            # talks to the local Ollama HTTP API (Stage 6)
 streamlit==1.63.0   # the dashboard companion page (Stage 7)
+altair==6.2.2       # interactive charts in the Streamlit page (was already
+                    # a transitive dep of streamlit; pinned explicitly now
+                    # that app.py imports it directly)
