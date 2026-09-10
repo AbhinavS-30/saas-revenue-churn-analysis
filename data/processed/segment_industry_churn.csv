@@ -1,0 +1,6 @@
+industry,n_accounts,n_churned,churn_rate_pct
+DevTools,113,35,31.0
+FinTech,112,25,22.3
+HealthTech,96,21,21.9
+EdTech,79,13,16.5
+Cybersecurity,100,16,16.0

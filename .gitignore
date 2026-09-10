@@ -8,11 +8,15 @@ __pycache__/
 .env
 kaggle.json
 
-# Data (raw/processed regenerated via scripts, not committed — see README)
+# Data: raw Kaggle CSVs are NOT committed (regenerated via the Kaggle
+# API, see README). data/processed/*.csv IS committed on purpose (small,
+# ~36KB total) — the deployed Streamlit app reads them directly for its
+# interactive filters, and there's no Postgres/pipeline on Streamlit
+# Cloud to regenerate them there. Learned this the hard way: the app
+# read data/processed/ fine locally but showed "No processed data
+# found" once deployed, because this folder was gitignored.
 data/raw/*
-data/processed/*
 !data/raw/.gitkeep
-!data/processed/.gitkeep
 
 # Docker volumes / local Postgres data
 docker/pgdata/

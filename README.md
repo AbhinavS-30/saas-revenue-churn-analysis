@@ -219,12 +219,18 @@ docker/            docker-compose.yml, Postgres init
 outputs/           charts (committed) and generated AI summaries (committed)
 ```
 
-Raw and processed data aren't committed to the repo (see `.gitignore`) —
-the dataset is free and one command away via the Kaggle API; instructions
-below. `outputs/figures/*.png` and `outputs/summaries/*.json` ARE
-committed on purpose: the figures make the README self-contained, and
-the deployed Streamlit app reads `executive_summary.json` directly from
-the repo since it can't run Ollama itself.
+**Raw** data isn't committed (see `.gitignore`) — the dataset is free
+and one command away via the Kaggle API; instructions below.
+`data/processed/*.csv`, `outputs/figures/*.png`, and
+`outputs/summaries/*.json` **are** committed on purpose: the deployed
+Streamlit app has no Postgres or pipeline behind it, so it can only read
+whatever's actually in the repo — it reads `data/processed/*.csv`
+directly for its interactive filters and `executive_summary.json` for
+the AI summary, since it can't run Ollama itself. (Learned this the
+hard way: the app worked locally but showed "No processed data found"
+on first deploy, because `data/processed/` was still gitignored at the
+time.) The figures are committed too, so the README is self-contained
+on GitHub without anyone needing to run the pipeline.
 
 ## Getting the data
 
