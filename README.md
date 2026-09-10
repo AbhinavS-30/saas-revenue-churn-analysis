@@ -149,6 +149,24 @@ what this pattern is and how it was validated for factual accuracy.*
 > engaging with DevTools customers to understand the root causes of
 > their churn and develop targeted retention strategies.
 
+## Running the Streamlit app locally
+
+```bash
+# venv (fast, for iterating on the app)
+.venv/bin/streamlit run streamlit_app/app.py
+
+# OR Docker (build context must be the repo ROOT, not streamlit_app/,
+# since it needs requirements.txt and outputs/ from there)
+docker build -f streamlit_app/Dockerfile -t saas-churn-streamlit .
+docker run -p 8501:8501 saas-churn-streamlit
+```
+Free deployment (what's actually used in production): push to GitHub,
+connect the repo at share.streamlit.io (free tier), set the main file
+to `streamlit_app/app.py`. That deployment does NOT use the Dockerfile
+above — Streamlit Community Cloud builds directly from
+`requirements.txt`. The Dockerfile is for local reproducibility only,
+consistent with this project's Docker-for-the-environment approach.
+
 ## Local AI summary layer (Ollama)
 
 `python/ai_summary/generate_summary.py` uses **Ollama** running
@@ -250,6 +268,13 @@ on one for anything numeric.
   Deploy: push to GitHub, connect the repo on
   share.streamlit.io (free tier), set main file to
   `streamlit_app/app.py`.
+- **Stage 8** — `streamlit_app/Dockerfile` added for local
+  reproducibility (`python:3.12-slim`, official multi-arch image, pulls
+  natively on Apple Silicon). Built and ran it: confirmed `linux/arm64`
+  (no emulation) and HTTP 200 serving correctly. Actual free deployment
+  uses share.streamlit.io directly from `requirements.txt`, not this
+  Dockerfile — Postgres (Stage 2) remains the only service that needs
+  Docker in production use of this project.
 
 ## Key findings
 
